@@ -11,5 +11,6 @@ Logika pre informatikov
 | Týždeň | Teoretické úlohy | Praktické úlohy |
 |--------|------------------|-----------------|
 |    1   | [výroková syntax a formalizácia](teoreticke/tu01.pdf) | [SAT solver](prakticke/pu01) |
+|    2   | [výroková sémantika a dokončenie syntaxe](teoreticke/tu02.pdf) | |
 
 [Pravidlá pre úlohy](http://dai.fmph.uniba.sk/w/Course:Mathematics_4/sk#pravidla-uloh).
