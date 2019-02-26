@@ -1,0 +1,4 @@
+if: type = pull_request
+dist: xenial
+language: generic
+script: test/travis.sh
