@@ -1109,14 +1109,16 @@ def printPass() -> None: printGreen('✓')
 def printFail() -> None: printRed('✕')
 
 def printResult(problem, res, errorUnsat):
+  ret = True
   sat, fails = res
   if errorUnsat and not sat:
     printFail()
     print("  teória je nesplniteľná")
-    return
+    return False
 
   for name, f, check in zip(problem['ts'], fails, problem['cs']):
     ok = f == True # type: bool
+    ret = ret and ok
     printStatus = printPass if ok else printFail
     printStatus()
     print(' %s' % (name,))
@@ -1127,6 +1129,8 @@ def printResult(problem, res, errorUnsat):
         print("    Nie je splnené v ohodnotení")
       print("      %s" % (formatInterpretation(f)))
     print()
+
+  return ret
 
 def testTheory(problem, fileName, errorUnsat = True):
   print('Testing %s' % (fileName,))
@@ -1139,13 +1143,18 @@ def testTheory(problem, fileName, errorUnsat = True):
       print('  Neznáme literály: %s' % ', '.join(unknownLits))
       return
     res = checkTheory(problem, t)
-    printResult(problem, res, errorUnsat)
+    return printResult(problem, res, errorUnsat)
   except FileNotFoundError:
-    print('  %s not found' % (fileName))
+    printFail()
+    print(' %s not found' % (fileName))
+    return False
 
 print()
-testTheory(spyTheoryProblem, 'spyTheory.txt')
+okT = testTheory(spyTheoryProblem, 'spyTheory.txt')
 print()
 print()
-testTheory(spyGoalProblem, 'spyGoal.txt', errorUnsat = False)
+okG = testTheory(spyGoalProblem, 'spyGoal.txt', errorUnsat = False)
 print()
+
+if not (okT and okG):
+  sys.exit(1)
