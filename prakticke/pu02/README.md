@@ -178,5 +178,5 @@ v programe zmaže zároveň aj všetky podformuly.
 
 ### Java
 Odovzdajte súbor `Formula.java` v podadresári [java](java/).
-Testovací program [`FormulaTest.java`](FormulaTest.java) musí byť skompilovateľný
+Testovací program [`FormulaTest.java`](java/FormulaTest.java) musí byť skompilovateľný
 a korektne zbehnúť, keď sa k nemu priloží vaša knižnica.
