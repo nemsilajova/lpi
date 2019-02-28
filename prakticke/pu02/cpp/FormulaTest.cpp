@@ -74,11 +74,12 @@ public:
 		delete f;
 	}
 
-	void status()
+	bool status()
 	{
 		std::cerr << "TESTED " << m_tested << std::endl;
 		std::cerr << "PASSED " << m_passed << std::endl;
 		std::cerr << ( m_tested == m_passed ? "OK" : "ERROR" ) << std::endl;
+		return m_tested == m_passed;
 	}
 };
 
@@ -252,6 +253,5 @@ int main()
 		delete nab;
 	}
 
-	t.status();
-	return 0;
+	return t.status() ? 0 : 1;
 }
