@@ -1,3 +1,5 @@
+package com.company;
+
 import java.lang.System;
 import java.util.Map;
 import java.util.HashMap;
@@ -183,63 +185,63 @@ public class FormulaTest {
         b8.put("c", true);
 
         Case[] cases = new Case[] {
-            CS(new Variable("a"), "a", 0,
-                new HashSet<String>(Arrays.asList("a")),
-                new ValCase[] {
-                Val(v1, true), Val(v2, false)
-            }),
+                CS(new Variable("a"), "a", 0,
+                        new HashSet<String>(Arrays.asList("a")),
+                        new ValCase[] {
+                                Val(v1, true), Val(v2, false)
+                        }),
 
-            new Case(new Negation(new Variable("a")), "-a", 1,
-                new HashSet<String>(Arrays.asList("a")),
-                new ValCase[] {
-                Val(v1, false), Val(v2, true) 
-            }),
-            new Case(new Conjunction( new Formula[] { new Variable("a"), new Variable("b") } ), "(a&b)", 1,
-                new HashSet<String>(Arrays.asList("a", "b")),
-                new ValCase[] {
-                Val(a1, false), Val(a2, false), Val(a3, false), Val(a4, true)
-            }),
-            new Case(new Disjunction( new Formula[] { new Variable("a"), new Variable("b") } ), "(a|b)", 1,
-                new HashSet<String>(Arrays.asList("a", "b")),
-                new ValCase[] {
-                Val(a1, false), Val(a2, true), Val(a3, true), Val(a4, true)
-            }),
-            new Case(new Implication( new Variable("a"), new Variable("b") ), "(a->b)", 1,
-                new HashSet<String>(Arrays.asList("a", "b")),
-                new ValCase[] {
-                Val(a1, true), Val(a2, true), Val(a3, false), Val(a4, true)
-            }),
-            new Case(new Equivalence( new Variable("a"), new Variable("b") ), "(a<->b)", 1,
-                new HashSet<String>(Arrays.asList("a", "b")),
-                new ValCase[] {
-                new ValCase(a1, true), new ValCase(a2, false), new ValCase(a3, false), new ValCase(a4, true)
-            }),
-            new Case(new Disjunction(new Formula[] {
-                    new Negation(new Implication(new Variable("a"), new Variable("b"))),
-                    new Negation(new Implication(new Variable("b"), new Variable("a")))
-                }), "(-(a->b)|-(b->a))", 5, 
-                new HashSet<String>(Arrays.asList("a", "b")),
-                new ValCase[] {
-                new ValCase(a1, false), new ValCase(a2, true), new ValCase(a3, true), new ValCase(a4, false)
-            }),
-            new Case(new Conjunction(new Formula[] {
-                    new Implication(new Variable("a"), new Variable("b")),
-                    new Implication(new Negation(new Variable("a")), new Variable("c"))
+                new Case(new Negation(new Variable("a")), "-a", 1,
+                        new HashSet<String>(Arrays.asList("a")),
+                        new ValCase[] {
+                                Val(v1, false), Val(v2, true)
+                        }),
+                new Case(new Conjunction( new Formula[] { new Variable("a"), new Variable("b") } ), "(a&b)", 1,
+                        new HashSet<String>(Arrays.asList("a", "b")),
+                        new ValCase[] {
+                                Val(a1, false), Val(a2, false), Val(a3, false), Val(a4, true)
+                        }),
+                new Case(new Disjunction( new Formula[] { new Variable("a"), new Variable("b") } ), "(a|b)", 1,
+                        new HashSet<String>(Arrays.asList("a", "b")),
+                        new ValCase[] {
+                                Val(a1, false), Val(a2, true), Val(a3, true), Val(a4, true)
+                        }),
+                new Case(new Implication( new Variable("a"), new Variable("b") ), "(a->b)", 1,
+                        new HashSet<String>(Arrays.asList("a", "b")),
+                        new ValCase[] {
+                                Val(a1, true), Val(a2, true), Val(a3, false), Val(a4, true)
+                        }),
+                new Case(new Equivalence( new Variable("a"), new Variable("b") ), "(a<->b)", 1,
+                        new HashSet<String>(Arrays.asList("a", "b")),
+                        new ValCase[] {
+                                new ValCase(a1, true), new ValCase(a2, false), new ValCase(a3, false), new ValCase(a4, true)
+                        }),
+                new Case(new Disjunction(new Formula[] {
+                        new Negation(new Implication(new Variable("a"), new Variable("b"))),
+                        new Negation(new Implication(new Variable("b"), new Variable("a")))
+                }), "(-(a->b)|-(b->a))", 5,
+                        new HashSet<String>(Arrays.asList("a", "b")),
+                        new ValCase[] {
+                                new ValCase(a1, false), new ValCase(a2, true), new ValCase(a3, true), new ValCase(a4, false)
+                        }),
+                new Case(new Conjunction(new Formula[] {
+                        new Implication(new Variable("a"), new Variable("b")),
+                        new Implication(new Negation(new Variable("a")), new Variable("c"))
                 }), "((a->b)&(-a->c))", 4,
-                new HashSet<String>(Arrays.asList("a", "b", "c")),
-                new ValCase[] {
-                    new ValCase(b1, false), new ValCase(b2, false), new ValCase(b3, false),
-                    new ValCase(b4, true), new ValCase(b5, true), new ValCase(b6, false),
-                    new ValCase(b7, true), new ValCase(b8, true)
-            }),
-            new Case(new Equivalence(
-                    new Conjunction(new Formula[] { new Variable("a"), new Negation(new Variable("b")) }),
-                    new Disjunction(new Formula[] { new Variable("a"), new Implication( new Variable("b"), new Variable("a")) })
+                        new HashSet<String>(Arrays.asList("a", "b", "c")),
+                        new ValCase[] {
+                                new ValCase(b1, false), new ValCase(b2, false), new ValCase(b3, false),
+                                new ValCase(b4, true), new ValCase(b5, true), new ValCase(b6, false),
+                                new ValCase(b7, true), new ValCase(b8, true)
+                        }),
+                new Case(new Equivalence(
+                        new Conjunction(new Formula[] { new Variable("a"), new Negation(new Variable("b")) }),
+                        new Disjunction(new Formula[] { new Variable("a"), new Implication( new Variable("b"), new Variable("a")) })
                 ), "((a&-b)<->(a|(b->a)))", 5,
-                new HashSet<String>(Arrays.asList("a", "b")),
-                new ValCase[] {
-                    new ValCase(a1, false), new ValCase(a2, true), new ValCase(a3, true), new ValCase(a4, false)
-            }),
+                        new HashSet<String>(Arrays.asList("a", "b")),
+                        new ValCase[] {
+                                new ValCase(a1, false), new ValCase(a2, true), new ValCase(a3, true), new ValCase(a4, false)
+                        }),
         };
 
         System.out.println("Testing toString");
