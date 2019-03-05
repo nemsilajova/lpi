@@ -253,5 +253,117 @@ int main()
 		delete nab;
 	}
 
+	std::cerr << "Testing Equals\n";
+	{
+		Formula *a1 = new Variable("a");
+		Formula *a2 = new Variable("a");
+		Formula *b = new Variable("b");
+		t.compare(a1->equals(a1), true, "equals a == itself");
+		t.compare(a1->equals(a2), true, "equals a == a");
+		t.compare(a1->equals(b), false, "equals a != b");
+		delete a1; delete a2; delete b;
+	}
+	{
+		Formula *a1 = new Negation(new Variable("a"));
+		Formula *a2 = new Negation(new Variable("a"));
+		Formula *b = new Negation(new Variable("b"));
+		t.compare(a1->equals(a1), true, "equals -a == itself");
+		t.compare(a1->equals(a2), true, "equals -a == -a");
+		t.compare(a1->equals(b), false, "equals -a != -b");
+		delete a1; delete a2; delete b;
+	}
+	{
+		Formula *a1 = new Conjunction({new Variable("a"), new Variable("b")});
+		Formula *a2 = new Conjunction({new Variable("a"), new Variable("b")});
+		Formula *b1 = new Conjunction({new Variable("c"), new Variable("b")});
+		Formula *b2 = new Conjunction({new Variable("a"), new Variable("d")});
+		t.compare(a1->equals(a1), true, "equals (a&b) == itself");
+		t.compare(a1->equals(a2), true, "equals (a&b) == (a&b)");
+		t.compare(a1->equals(b1), false, "equals (a&b) != (c&b)");
+		t.compare(a1->equals(b2), false, "equals (a&b) != (a&d)");
+		t.compare(b1->equals(b2), false, "equals (c&b) != (a&d)");
+		delete a1; delete a2; delete b1; delete b2;
+	}
+	{
+		Formula *a1 = new Disjunction({new Variable("a"), new Variable("b")});
+		Formula *a2 = new Disjunction({new Variable("a"), new Variable("b")});
+		Formula *b1 = new Disjunction({new Variable("c"), new Variable("b")});
+		Formula *b2 = new Disjunction({new Variable("a"), new Variable("d")});
+		t.compare(a1->equals(a1), true, "equals (a|b) == itself");
+		t.compare(a1->equals(a2), true, "equals (a|b) == (a|b)");
+		t.compare(a1->equals(b1), false, "equals (a|b) != (c|b)");
+		t.compare(a1->equals(b2), false, "equals (a|b) != (a|d)");
+		t.compare(b1->equals(b2), false, "equals (c|b) != (a|d)");
+		delete a1; delete a2; delete b1; delete b2;
+	}
+	{
+		Formula *a1 = new Implication(new Variable("a"), new Variable("b"));
+		Formula *a2 = new Implication(new Variable("a"), new Variable("b"));
+		Formula *b1 = new Implication(new Variable("c"), new Variable("b"));
+		Formula *b2 = new Implication(new Variable("a"), new Variable("d"));
+		t.compare(a1->equals(a1), true, "equals (a->b) == itself");
+		t.compare(a1->equals(a2), true, "equals (a->b) == (a->b)");
+		t.compare(a1->equals(b1), false, "equals (a->b) != (c->b)");
+		t.compare(a1->equals(b2), false, "equals (a->b) != (a->d)");
+		t.compare(b1->equals(b2), false, "equals (c->b) != (a->d)");
+		delete a1; delete a2; delete b1; delete b2;
+	}
+	{
+		Formula *a1 = new Implication(new Variable("a"), new Variable("b"));
+		Formula *a2 = new Implication(new Variable("a"), new Variable("b"));
+		Formula *b1 = new Implication(new Variable("c"), new Variable("b"));
+		Formula *b2 = new Implication(new Variable("a"), new Variable("d"));
+		t.compare(a1->equals(a1), true, "equals (a<->b) == itself");
+		t.compare(a1->equals(a2), true, "equals (a<->b) == (a<->b)");
+		t.compare(a1->equals(b1), false, "equals (a<->b) != (c<->b)");
+		t.compare(a1->equals(b2), false, "equals (a<->b) != (a<->d)");
+		t.compare(b1->equals(b2), false, "equals (c<->b) != (a<->d)");
+		delete a1; delete a2; delete b1; delete b2;
+	}
+	{
+		Formula *a = new Equivalence(
+				new Conjunction({new Variable("a"), new Negation(new Variable("b"))}),
+				new Disjunction({new Variable("a"), new Implication(new Variable("b"), new Variable("a"))})
+		);
+		Formula *b = new Equivalence(
+				new Conjunction({ new Variable("a"), new Negation(new Variable("b"))}),
+				new Disjunction({ new Variable("a"), new Implication(new Variable("b"), new Variable("a"))})
+		);
+		Formula *c = new Equivalence(
+				new Disjunction({new Variable("a"),new Negation(new Variable("b"))}),
+				new Disjunction({new Variable("a"),new Implication(new Variable("b"),new Variable("a"))})
+		);
+		t.compare(a->equals(a), true, "equals ((a&-b)<->(a|(b->a))) == itself" );
+		t.compare(a->equals(b), true, "equals ((a&-b)<->(a|(b->a))) == ((a&-b)<->(a|(b->a)))");
+		t.compare(a->equals(c), false, "equals ((a&-b)<->(a|(b->a))) != ((a|-b)<->(a|(b->a)))");
+		delete a; delete b; delete c;
+	}
+
+	{
+		std::cerr << "Testing substitute\n";
+		Formula *a = new Equivalence(
+				new Conjunction({new Variable("a"), new Negation(new Variable("b"))}),
+				new Disjunction({new Variable("a"), new Implication(new Variable("b"), new Variable("a"))})
+		);
+		Formula *b = new Equivalence(
+				new Disjunction({new Variable("a"),new Negation(new Variable("b"))}),
+				new Disjunction({new Variable("a"),new Implication(new Variable("b"),new Variable("a"))})
+		);
+		Formula *w = new Conjunction({new Variable("a"), new Negation(new Variable("b"))});
+		Formula *r = new Disjunction({new Variable("a"), new Negation(new Variable("b"))});
+		Equivalence *s = dynamic_cast<Equivalence*>(a->substitute(w, r));
+		assert(s);
+		t.compare(s->equals(b), true, "substitute " + r->toString() + " for " + w->toString() + " in " + a->toString() + " -> ((a|-b)<->(a|(b->a)))");
+		t.compare(s == a, false, "substite creates new copy");
+
+		t.compare(s->leftSide()->equals(r), true, "substitute replaces with equal formula");
+		t.compare(s->leftSide() == r, false, "substitute replaces with new copy");
+
+		Formula *r2 = r->substitute(new Variable("b"), new Variable("c"));
+		Formula *d = new Disjunction({new Variable("a"), new Negation(new Variable("c"))});
+		t.compare(r2->equals(d), true, "substitute b for c in (a|-b) -> (a|-c)");
+		delete a; delete b; delete w; delete r; delete s; delete r2; delete d;
+	}
+
 	return t.status() ? 0 : 1;
 }
